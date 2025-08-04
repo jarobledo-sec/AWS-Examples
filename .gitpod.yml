@@ -17,10 +17,12 @@ tasks:
       sudo apt-get update
       sudo apt-get install -y powershell
       pwsh
-      Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-      Install-Module -Name AWS.Tools.Installer -Force
-      Install-AWSToolsModule AWS.Tools.S3 -CleanUp -Confirm:$false
+      pwsh -Command "
+      Set-PSRepository -Name PSGallery -InstallationPolicy Trusted;
+      Install-Module -Name AWS.Tools.Installer -Force;
+      Install-AWSToolsModule AWS.Tools.S3 -CleanUp -Confirm:\$false;
       exit
+      "
   - name: aws-cli
     env:
       AWS_CLI_AUTO_PROMPT: on-partial
