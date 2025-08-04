@@ -1,0 +1,33 @@
+#! /usr/bin/env bash
+
+echo "== delete objects"
+
+# exit inmediately if any command returns a non-zero status
+set -e
+
+# check for bucket name
+if [ -z "$1" ]; then
+    echo "There needs to be a bucket name eg. ./bucket my-bucket-name"
+    exit 1
+fi
+
+BUCKET_NAME="$1"
+
+DELETE_OBJECTS=$(aws s3api list-objects \
+--bucket $BUCKET_NAME \
+--query 'Contents[].Key')
+
+if [ "$DELETE_OBJECTS" == "null" ]; then
+    echo "No objects to delete in bucket: $BUCKET_NAME"
+    exit 1
+fi
+
+echo "$DELETE_OBJECTS" \
+| jq -n '{Objects: [inputs | .[] | {Key: .}]}' > /tmp/delete_objects.json
+
+aws s3api delete-objects \
+--bucket $BUCKET_NAME \
+--delete file:///tmp/delete_objects.json 
+
+# delete .json
+rm -f /tmp/delete_objects.json
