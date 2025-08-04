@@ -16,7 +16,6 @@ tasks:
       rm packages-microsoft-prod.deb
       sudo apt-get update
       sudo apt-get install -y powershell
-      pwsh
       pwsh -Command "
       Set-PSRepository -Name PSGallery -InstallationPolicy Trusted;
       Install-Module -Name AWS.Tools.Installer -Force;
