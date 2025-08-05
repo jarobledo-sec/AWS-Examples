@@ -1,0 +1,34 @@
+#! /usr/bin/env bash
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    echo "Script must be executed like '. $0' or 'source $0'"
+    exit 1
+fi
+
+cd /workspace/AWS-Examples/s3/sdk/python || { echo "Path does not exist"; exit 1; }
+
+# create the virtual environment if it does not exist
+if [ ! -d ".venv" ]; then
+    echo "Creating virtual environment..."
+    python -m venv .venv
+fi
+
+
+if [ "$1" == "on" ]; then
+    source .venv/bin/activate
+    echo "Virtual environment activated on $(pwd)..."
+    
+    # install dependencies from requirements.txt if it exists
+    if [ -f "requirements.txt" ]; then
+        echo "Installing dependencies from requirements.txt..."
+        pip install -r requirements.txt
+    fi
+elif [ "$1" == "off" ]; then
+    echo "Virtual environment deactivated..."
+    deactivate 2>/dev/null || echo "No virtual environment to deactivate"
+    echo "Removing virtual environment..."
+    rm -rf .venv
+else
+    echo "Use on to activate eg. source $0 on"
+    echo "Use off to deactivate eg. source $0 off"
+fi
